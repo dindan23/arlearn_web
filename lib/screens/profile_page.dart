@@ -1,5 +1,7 @@
 import 'dart:io';
 
+import 'package:arlearn_web/model/firebase_file.dart';
+import 'package:arlearn_web/screens/filegallery_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +13,7 @@ import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path/path.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:arlearn_web/firebase_api.dart';
+import 'package:arlearn_web/model/firebase_file.dart';
 
 String nowUser = '';
 
@@ -36,13 +39,15 @@ class _ProfilePageState extends State<ProfilePage> {
     _currentUser = widget.user;
     super.initState();
     nowUser = _currentUser.uid;
+    late Future<List<FirebaseFile>> futureFiles;
+    futureFiles = FirebaseApi.listAll('UserUpload/$nowUser/');
   }
 
   @override
   Widget build(BuildContext context) {
     final fileName = file != null ? basename(file!.path) : 'No File Selected';
-
-
+  
+      
     return Scaffold(
       appBar: AppBar(
         title: Text('Profile'),
@@ -51,6 +56,18 @@ class _ProfilePageState extends State<ProfilePage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+
+            ElevatedButton(
+            onPressed: () {
+              Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => MyGallery()),
+              );
+              }, child: Text('GALLERY'),
+
+                
+            ),
+            SizedBox(height: 16.0),
 
             ElevatedButton(
             onPressed: selectFile, child: Text('UPLOAD FILE'),
